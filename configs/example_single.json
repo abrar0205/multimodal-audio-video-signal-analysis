@@ -1,10 +1,10 @@
 {
   "audio": {
-    "vad_sample_rate": 16000,
     "frame_duration": 0.05,
     "min_segment_duration": 0.2,
     "min_gap_duration": 0.15,
-    "channel": "mono"
+    "channel": "mono",
+    "energy_threshold_db_above_noise": 6.0
   },
   "pitch": {
     "first_pass_floor": 60,
