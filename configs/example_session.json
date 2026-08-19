@@ -4,20 +4,18 @@
   "recordings": [
     {
       "id": "recording_01",
-      "path": "data/recording_01.mp4",
-      "rotation": "auto"
+      "path": "data/recording_01.mp4"
     },
     {
       "id": "recording_02",
-      "path": "data/recording_02.mp4",
-      "rotation": "auto"
+      "path": "data/recording_02.mp4"
     }
   ],
   "analysis": {
     "audio": {
       "frame_duration": 0.05,
-      "attribution_margin_db": 6,
-      "channel": "mono"
+      "channel": "mono",
+      "energy_threshold_db_above_noise": 6.0
     },
     "video": {
       "rotation": "auto",
