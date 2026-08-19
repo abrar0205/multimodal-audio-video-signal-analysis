@@ -10,14 +10,10 @@ import json
 
 @dataclass(slots=True)
 class AudioConfig:
-    vad_sample_rate: int = 16_000
     frame_duration: float = 0.05
-    attribution_margin_db: float = 6.0
     min_segment_duration: float = 0.20
     min_gap_duration: float = 0.15
     channel: int | str = "mono"
-    resample_for_vad: bool = True
-    activity_backend: str = "energy"
     energy_threshold_db_above_noise: float = 6.0
 
 
