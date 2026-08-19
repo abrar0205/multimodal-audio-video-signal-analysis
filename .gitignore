@@ -1,4 +1,5 @@
 .venv/
+.venv_*/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -9,13 +10,18 @@ __pycache__/
 # Local media and derived artifacts are intentionally excluded.
 data/
 media/
+private_data/
+work/
 models/
 *.mp4
 *.mov
 *.avi
 *.mkv
+*.webm
 *.wav
 *.flac
+*.mp3
+*.m4a
 *.npz
 outputs/*
 !outputs/.gitkeep
@@ -24,3 +30,7 @@ outputs/*
 dist/
 build/
 *.egg-info/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
