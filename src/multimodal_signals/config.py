@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 import json
@@ -17,6 +17,8 @@ class AudioConfig:
     min_gap_duration: float = 0.15
     channel: int | str = "mono"
     resample_for_vad: bool = True
+    activity_backend: str = "energy"
+    energy_threshold_db_above_noise: float = 6.0
 
 
 @dataclass(slots=True)
@@ -74,10 +76,5 @@ class AnalysisConfig:
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "audio": self.audio.__dict__,
-            "pitch": self.pitch.__dict__,
-            "intensity": self.intensity.__dict__,
-            "video": self.video.__dict__,
-            "ocular": self.ocular.__dict__,
-        }
+        """Return a JSON-serializable nested configuration dictionary."""
+        return asdict(self)
