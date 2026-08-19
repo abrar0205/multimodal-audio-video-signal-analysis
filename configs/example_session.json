@@ -1,0 +1,27 @@
+{
+  "session_id": "example_session",
+  "synchronized": true,
+  "recordings": [
+    {
+      "id": "recording_01",
+      "path": "data/recording_01.mp4",
+      "rotation": "auto"
+    },
+    {
+      "id": "recording_02",
+      "path": "data/recording_02.mp4",
+      "rotation": "auto"
+    }
+  ],
+  "analysis": {
+    "audio": {
+      "frame_duration": 0.05,
+      "attribution_margin_db": 6,
+      "channel": "mono"
+    },
+    "video": {
+      "rotation": "auto",
+      "model_path": "models/face_landmarker.task"
+    }
+  }
+}

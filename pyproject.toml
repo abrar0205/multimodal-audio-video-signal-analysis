@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multimodal-audio-video-signal-analysis"
+version = "0.1.0"
+description = "Generic audio/video signal analysis toolkit with quality control and cautious behavioral features."
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [{ name = "Portfolio Project" }]
+dependencies = [
+  "numpy==2.1.3",
+  "pandas==2.2.3",
+  "scipy==1.15.3",
+  "matplotlib==3.10.0",
+  "av==18.0.0",
+  "praat-parselmouth==0.4.7",
+  "torch==2.11.0",
+  "torchaudio==2.11.0",
+  "silero-vad==6.2.1",
+  "opencv-contrib-python==5.0.0.93",
+  "mediapipe==1.0.0",
+]
+
+[project.scripts]
+multimodal-signals = "multimodal_signals.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

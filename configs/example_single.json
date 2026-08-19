@@ -1,0 +1,32 @@
+{
+  "audio": {
+    "vad_sample_rate": 16000,
+    "frame_duration": 0.05,
+    "min_segment_duration": 0.2,
+    "min_gap_duration": 0.15,
+    "channel": "mono"
+  },
+  "pitch": {
+    "first_pass_floor": 60,
+    "first_pass_ceiling": 500,
+    "adaptive_bounds": true,
+    "min_voiced_frames": 5
+  },
+  "intensity": {
+    "gate_db": 20
+  },
+  "video": {
+    "rotation": "auto",
+    "expected_fps": null,
+    "model_path": null
+  },
+  "ocular": {
+    "blink_threshold": 0.45,
+    "min_blink_duration": 0.05,
+    "prolonged_closure_duration": 0.5,
+    "median_filter_width": 5,
+    "shift_percentile": 95,
+    "shift_min_distance": 0.15,
+    "blink_guard_seconds": 0.1
+  }
+}
