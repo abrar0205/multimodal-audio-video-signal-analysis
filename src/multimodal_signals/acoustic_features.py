@@ -51,7 +51,12 @@ def f0_from_wav(
         warning = "Too few voiced frames for adaptive pitch bounds."
     f0 = pitch.selected_array["frequency"].astype(float)
     f0[f0 <= 0] = np.nan
-    return pitch.xs(), f0, {"pitch_floor_hz": floor, "pitch_ceiling_hz": ceiling, "f0_state": state, "f0_warning": warning}
+    return pitch.xs(), f0, {
+        "pitch_floor_hz": floor,
+        "pitch_ceiling_hz": ceiling,
+        "f0_state": state,
+        "f0_warning": warning,
+    }
 
 
 def f0_statistics(f0_hz: np.ndarray, min_voiced_frames: int = 5) -> dict[str, float | int | str]:
@@ -87,7 +92,11 @@ def f0_statistics(f0_hz: np.ndarray, min_voiced_frames: int = 5) -> dict[str, fl
     }
 
 
-def f0_from_signal(signal: np.ndarray, sample_rate: int, **kwargs: object) -> tuple[np.ndarray, np.ndarray, dict[str, object]]:
+def f0_from_signal(
+    signal: np.ndarray,
+    sample_rate: int,
+    **kwargs: object,
+) -> tuple[np.ndarray, np.ndarray, dict[str, object]]:
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         tmp_path = Path(tmp.name)
     try:
@@ -97,14 +106,36 @@ def f0_from_signal(signal: np.ndarray, sample_rate: int, **kwargs: object) -> tu
         tmp_path.unlink(missing_ok=True)
 
 
+def _frame_rms(signal: np.ndarray, frame_n: int) -> np.ndarray:
+    """Compute non-overlapping frame RMS without large convolution temporaries."""
+    x = np.asarray(signal, dtype=float)
+    if x.size == 0:
+        return np.array([], dtype=float)
+    n_frames = int(np.ceil(x.size / frame_n))
+    padded_n = n_frames * frame_n
+    if padded_n != x.size:
+        x = np.pad(x, (0, padded_n - x.size))
+    frames = x.reshape(n_frames, frame_n)
+    return np.sqrt(np.mean(frames * frames, axis=1))
+
+
 def intensity_statistics(
-    signal: np.ndarray, sample_rate: int, gate_db: float = 20.0, frame_s: float = 0.05
+    signal: np.ndarray,
+    sample_rate: int,
+    gate_db: float = 20.0,
+    frame_s: float = 0.05,
 ) -> tuple[dict[str, float | int | str], np.ndarray]:
+    """Return frame-level relative intensity summaries and a high-energy gate.
+
+    Values are relative recording levels (dBFS-like), not calibrated SPL.
+    """
     x = np.asarray(signal, dtype=float)
     if x.size == 0:
         return {"intensity_qc": "empty_signal"}, np.array([], dtype=bool)
+    if sample_rate <= 0:
+        raise ValueError("sample_rate must be positive")
     frame_n = max(1, int(round(frame_s * sample_rate)))
-    rms = np.sqrt(np.convolve(x**2, np.ones(frame_n) / frame_n, mode="same"))
+    rms = _frame_rms(x, frame_n)
     db = 20 * np.log10(rms + 1e-12)
     peak = float(np.percentile(db, 99))
     gate = db > peak - gate_db
@@ -117,6 +148,7 @@ def intensity_statistics(
         "relative_level_peak_dbfs": peak,
         "relative_level_dynamic_range_db": float(np.percentile(vals, 95) - np.percentile(vals, 5)),
         "relative_level_sd_db": float(np.std(vals)),
-        "n_high_energy_samples": int(vals.size),
+        "n_high_energy_frames": int(vals.size),
+        "intensity_frame_s": float(frame_s),
         "intensity_qc": "ok",
     }, gate

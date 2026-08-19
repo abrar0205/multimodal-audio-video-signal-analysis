@@ -1,6 +1,6 @@
 import numpy as np
 
-from multimodal_signals.acoustic_features import f0_statistics
+from multimodal_signals.acoustic_features import f0_statistics, intensity_statistics
 from multimodal_signals.audio_qc import level_stats
 from multimodal_signals.speech_activity import activity_features
 
@@ -27,3 +27,11 @@ def test_activity_features_handles_silence():
     features, mask = activity_features(np.zeros(1600), sample_rate=16000)
     assert len(mask) > 0
     assert features["n_segments"] == 0
+
+
+def test_intensity_statistics_are_frame_level():
+    signal = 0.25 * np.ones(1600, dtype=float)
+    stats, gate = intensity_statistics(signal, sample_rate=16000, frame_s=0.05)
+    assert stats["intensity_qc"] == "ok"
+    assert stats["n_high_energy_frames"] == 2
+    assert gate.shape == (2,)
